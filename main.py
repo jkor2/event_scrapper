@@ -1,4 +1,6 @@
 import requests
+from bs4 import BeautifulSoup
+import pprint as pp
 
 class Grouped:
     """
@@ -10,9 +12,19 @@ class Grouped:
         self._url = url
         self._soup_object = None
     
+    def create_url(self, url):
+        """
+        Create & update url
+        """
+        self._url = url
+
     def _http_request(self):
         if not self._url:
             return "Error - invalid url"
+        
+        webpage = requests.get(self._url, 'html.parser')
+        soup = BeautifulSoup(webpage.content)
+        pp.pprint(soup)
         
         # Request 
         # Turn website in soup object 
@@ -33,4 +45,5 @@ class Grouped:
 
 
 
-    
+event = Grouped("")
+event._http_request()
