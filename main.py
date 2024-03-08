@@ -1,6 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
 import pprint as pp
+import re
+
 
 class Grouped:
     """
@@ -23,11 +25,15 @@ class Grouped:
             return "Error - invalid url"
         
         try:
-            webpage = requests.get(self._url, 'html.parser')
-            soup = BeautifulSoup(webpage.content)
-            pp.pprint(soup)
+            webpage = requests.get(self._url, 'html.parser')        # Parse Webpage
+            soup = BeautifulSoup(webpage.content)                   # Create Soup Object
+            pattern = re.compile(r'ContentTopLevel_ContentPlaceHolder1_repSchedule_lbl.+') # Regex to find needed ID 
+            matching_elements = soup.find_all(id=pattern)           # Search 
+            self._soup_object = matching_elements                   # Assign the data to private variable 
+            self.find_data(self._soup_object)                       # Run the find data method
+
         except:
-            print("Erorr")
+            print("WARNING: URL INVALID")
         
         # Request 
         # Turn website in soup object 
@@ -48,5 +54,5 @@ class Grouped:
 
 
 
-event = Grouped("https://wwwwenfwef.com")
+event = Grouped("https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8122")
 event._http_request()
