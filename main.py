@@ -185,6 +185,7 @@ class Grouped:
                         temp_hold += "%s " % j
                 
                 if temp_hold[-1] == "0":
+                    # Not removing the last letter if it ends in "0"
                     temp_list.append(temp_hold + ",")
                 else:
                     temp_list.append(temp_hold[:-1] + ",")
