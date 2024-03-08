@@ -22,9 +22,12 @@ class Grouped:
         if not self._url:
             return "Error - invalid url"
         
-        webpage = requests.get(self._url, 'html.parser')
-        soup = BeautifulSoup(webpage.content)
-        pp.pprint(soup)
+        try:
+            webpage = requests.get(self._url, 'html.parser')
+            soup = BeautifulSoup(webpage.content)
+            pp.pprint(soup)
+        except:
+            print("Erorr")
         
         # Request 
         # Turn website in soup object 
@@ -45,5 +48,5 @@ class Grouped:
 
 
 
-event = Grouped("")
+event = Grouped("https://wwwwenfwef.com")
 event._http_request()
