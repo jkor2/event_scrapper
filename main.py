@@ -1,11 +1,9 @@
 """
-Need to check url to determine which class is better for the scrape
-Check url endpoint, if GroupedEvents present, run grouped class
-if not, run individual event class
-
-
 Need to add in a method to handle all individual event links at once
 EX: Past in 3 individual links and output scraped/reformatted data
+
+Need to automatically pass the single events into the single event class to be handled, 
+returned, and appeneded to the current class
 
 """
 
@@ -17,16 +15,24 @@ import re
 
 class DetermineEventType:
     """
-    Determines the event type based on url 
+    Determines the event type based on url -- error prevention
     """
     def __init__(self, url):
         self._url = url
     
-    def determine(self):
+    def determine(self, type):
         if self._url.split("https://www.perfectgame.org/")[1].split("/")[0] == 'Schedule':
-            print("Grouped Event")
+            if type == 1: # Grouped Event
+                return True
+            else:
+                return False
         else:
-            print("Single event")
+            if type == 2: # Single event
+                return True
+            else:
+                return False
+            
+
         
     
 class Grouped:
@@ -36,6 +42,7 @@ class Grouped:
     """
 
     def __init__(self):
+        self._event_type = 1
         self._url = None
         self._soup_object = None
         self._event_dates = None
@@ -59,7 +66,14 @@ class Grouped:
         Create & update url
         """
         self._url = url
-        self._http_request()
+        check_event_type = DetermineEventType(self._url)
+        check_event_type.determine(1)
+
+        if check_event_type is True:
+            self._http_request()
+        else:
+            print("Error, incorrect type of event found.... skipping for now")
+            # Eventually will run the single event class, crawl, and append ti output
 
     def _http_request(self):
         """
@@ -106,7 +120,8 @@ class Grouped:
             return self.clean_data()                       
 
         except:
-            print("WARNING: URL INVALID")
+            # Main Error 
+            print("Please Restart")
         
 
     def clean_data(self):
@@ -220,55 +235,48 @@ class Grouped:
 
         
 
-instance = DetermineEventType("https://www.perfectgame.org/Events/Default.aspx?event=79728")
-instance.determine()
-
-
 event = Grouped()
 
 
+while True:
 
+    print("Grouped Events -------------> 1")
+    print("Individual Event -----------> 2")
+    print("Exit -----------------------> 3")
+    selection = int(input("Please Select an Option > "))
 
-
-# while True:
-
-#     print("Grouped Events -------------> 1")
-#     print("Individual Event -----------> 2")
-#     print("Exit -----------------------> 3")
-#     selection = int(input("Please Select an Option > "))
-
-#     if selection == 1:
-#         try:
-#             event_amount = int(input("Enter the number of events >"))
-#             count = event_amount 
-#             while count > 0:
-#                 url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
-#                 event.create_url(url)
-#                 count -= 1
+    if selection == 1:
+        try:
+            event_amount = int(input("Enter the number of events >"))
+            count = event_amount 
+            while count > 0:
+                url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
+                event.create_url(url)
+                count -= 1
     
 
-#             print()
-#             print("----------------PRINTING----------------DATA----------------")
-#             print()
+            print()
+            print("----------------PRINTING----------------DATA----------------")
+            print()
 
-#             all_data = event.return_all()
-#             event_count = 1
-#             for event in all_data:
-#                 print("EVENT #%s" % event_count)
-#                 print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
-#                 print("Event Dates:" + " " + str(event["Event Dates:"]))
-#                 print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
-#                 print("Location:" + " " + str(event["Location:"]))
-#                 print("Age Group:" + " " + str(event["Age Group:"]))
-#                 print("Link for event:" + " " + str(event["Link for event:"]))
-#                 print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
-#                 print()
+            all_data = event.return_all()
+            event_count = 1
+            for event in all_data:
+                print("EVENT #%s" % event_count)
+                print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
+                print("Event Dates:" + " " + str(event["Event Dates:"]))
+                print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
+                print("Location:" + " " + str(event["Location:"]))
+                print("Age Group:" + " " + str(event["Age Group:"]))
+                print("Link for event:" + " " + str(event["Link for event:"]))
+                print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
+                print()
             
-#                 event_count += 1
+                event_count += 1
 
-#         except:
-#             exit()
-#     elif selection != 2:
-#         exit() 
+        except:
+            exit()
+    elif selection != 2:
+        exit() 
 
 
