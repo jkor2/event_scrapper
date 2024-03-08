@@ -23,6 +23,7 @@ class DetermineEventType:
     def determine(self, type):
         if self._url.split("https://www.perfectgame.org/")[1].split("/")[0] == 'Schedule':
             if type == 1: # Grouped Event
+                print("True")
                 return True
             else:
                 return False
@@ -67,9 +68,8 @@ class Grouped:
         """
         self._url = url
         check_event_type = DetermineEventType(self._url)
-        check_event_type.determine(1)
-
-        if check_event_type is True:
+        
+        if check_event_type.determine(1):
             self._http_request()
         else:
             print("Error, incorrect type of event found.... skipping for now")
