@@ -135,6 +135,9 @@ class Grouped:
 
         
     def reset_output(self):
+        """
+        Resets output object
+        """
         self.output = {
             "Headline/Tournament Name:": None,
             "Event Dates:" : None,
@@ -145,11 +148,17 @@ class Grouped:
             "Link for event:": None
         }        
     
-    def retuen_all(self):
+    def return_all(self):
+        """
+        Returns all events stored
+        """
         return self._mulit_event_output
 
 
     def format_ages(self):
+        """
+        Format age groups to an easy copy and paste string
+        """
         temp_list = []
         data =self.output['Age Group:']
         print(self.output["Age Group:"])
@@ -170,7 +179,7 @@ class Grouped:
 event = Grouped()
 
 # event.create_url("https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8389")
-# pp.pprint(event.retuen_all())
+# pp.pprint(event.return_all())
 
 print("Grouped Events -------------> 1")
 print("Individual Event -----------> 2")
@@ -191,7 +200,7 @@ if selection == 1:
         print("----------------PRINTING----------------DATA----------------")
         print()
 
-        all_data = event.retuen_all()
+        all_data = event.return_all()
         event_count = 1
         for event in all_data:
             print("EVENT #%s" % event_count)
