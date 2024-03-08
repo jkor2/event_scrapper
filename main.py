@@ -10,8 +10,8 @@ class Grouped:
     Initial arg is the url
     """
 
-    def __init__(self, url):
-        self._url = url
+    def __init__(self):
+        self._url = None
         self._soup_object = None
         self._event_dates = None
         self._event_ballparks = None
@@ -25,7 +25,7 @@ class Grouped:
             "Location:": None,
             "Age Group:" : {}, 
             "Specific Benefits/Callouts:": None, 
-            "Link for event:": url
+            "Link for event:": None
         }
     
     def create_url(self, url):
@@ -33,6 +33,7 @@ class Grouped:
         Create & update url
         """
         self._url = url
+        self._http_request()
 
     def _http_request(self):
         """
@@ -45,6 +46,9 @@ class Grouped:
             # Grab webpage & create soup object
             webpage = requests.get(self._url, 'html.parser')        
             soup = BeautifulSoup(webpage.content, features="lxml")                   
+
+            # Set event url 
+            self.output["Link for event:"] = self._url
 
             # Find groupname 
             pattern_group_name = re.compile(r'ContentTopLevel_ContentPlaceHolder1_lblGroupname')
@@ -104,15 +108,77 @@ class Grouped:
         
         # Set location
         self.output["Location:"] = self._event_city_state
+        self._mulit_event_output.append(self.output)
 
-        for i in self.output:
-            print(i, self.output[i])
+        # Reset output for next event
+        self.reset_output()
+
         
+    def reset_output(self):
+        self.output = {
+            "Headline/Tournament Name:": None,
+            "Event Dates:" : None,
+            "Facility/Field Name:": None, 
+            "Location:": None,
+            "Age Group:" : {}, 
+            "Specific Benefits/Callouts:": None, 
+            "Link for event:": None
+        }        
+    
+    def retuen_all(self):
+        return self._mulit_event_output
 
 
 
 
 
 
-event = Grouped("https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8122")
-event._http_request()
+
+event = Grouped()
+#event.create_url("https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8122")
+
+
+print("Grouped Events: 1")
+print("Individual Event: 2")
+print("Exit: 3")
+selection = int(input("Please Select an Option > "))
+
+if selection == 1:
+    try:
+        event_amount = int(input("Enter the number of events >"))
+        count = event_amount 
+        while count > 0:
+            url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
+            event.create_url(url)
+            count -= 1
+    
+
+        print()
+        print("----------------PRINTING----------------DATA----------------")
+        print()
+
+        all_data = event.retuen_all()
+        event_count = 1
+        for event in all_data:
+            print("EVENT #%s" % event_count)
+            print("Headline/Tournament Name:" + str(event["Headline/Tournament Name:"]))
+            print("Event Dates:" + str(event["Event Dates:"]))
+            print("Facility/Field Name:" + str(event["Facility/Field Name:"]))
+            print("Location:" + str(event["Location:"]))
+            print("Age Group:" + str(event["Age Group:"]))
+            print("Specific Benefits/Callouts:" + str(event["Specific Benefits/Callouts:"]))
+            print("Link for event:" + str(event["Link for event:"]))
+            print()
+            
+            event_count += 1
+
+
+
+    except:
+        exit()
+
+ # https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8122
+# https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8116
+        
+# https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=17725
+    
