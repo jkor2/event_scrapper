@@ -46,6 +46,11 @@ class Grouped:
             webpage = requests.get(self._url, 'html.parser')        
             soup = BeautifulSoup(webpage.content, features="lxml")                   
 
+            # Find groupname 
+            pattern_group_name = re.compile(r'ContentTopLevel_ContentPlaceHolder1_lblGroupname')
+            event_group_name = soup.find(id=pattern_group_name)
+            self.output["Headline/Tournament Name:"] = event_group_name.get_text()
+            
             # Handle Dates 
             pattern_dates = re.compile(r'ContentTopLevel_ContentPlaceHolder1_repSchedule_lblEventDate.+') 
             event_dates = soup.find_all(id=pattern_dates)           
@@ -87,6 +92,7 @@ class Grouped:
         # Append all ages 
         for age in self._event_ages_and_divisions:
             text = age.get_text()
+            # Reformat
             if text.split(" ")[0] in self.output["Age Group:"]:
                 self.output["Age Group:"][text.split(" ")[0]].append(text.split(" ")[1][1:-1])
             else:
