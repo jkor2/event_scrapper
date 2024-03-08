@@ -161,7 +161,13 @@ class Grouped:
         """
         temp_list = []
         data =self.output['Age Group:']
-        print(self.output["Age Group:"])
+        
+        # To confrim age and divisions in console
+        print()
+        print("AGE/Divisions for", self.output["Headline/Tournament Name:"])
+        print(data)
+        print()
+
         for i in self._age_groups:
             if i in data:
                 temp_hold = "%s " % i
@@ -209,8 +215,8 @@ if selection == 1:
             print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
             print("Location:" + " " + str(event["Location:"]))
             print("Age Group:" + " " + str(event["Age Group:"]))
-            print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
             print("Link for event:" + " " + str(event["Link for event:"]))
+            print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
             print()
             
             event_count += 1
