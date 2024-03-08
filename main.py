@@ -99,8 +99,9 @@ class Grouped:
             if text.split(" ")[0] in self.output["Age Group:"]:
                 if text.split(" ")[-1][1:-1] == "60/90" or text.split(" ")[-1][1:-1]  == "54/80":
                     # Checking for instances of (OPEN) (60/90) or (54/80)
-                    joined_string = " ".join(text.split(" ")[1:])
-                    print(joined_string)
+                    s1 = text.split(" ")[1][1:-1]
+                    s2 = text.split(" ")[2][1:-1]
+                    joined_string = str(s1) + " " + str(s2)  
                     self.output["Age Group:"][text.split(" ")[0]] = [joined_string]
                 else:
                     self.output["Age Group:"][text.split(" ")[0]].append(text.split(" ")[1][1:-1])
@@ -111,8 +112,9 @@ class Grouped:
                 else:
                     if text.split(" ")[-1][1:-1] == "60/90" or text.split(" ")[-1][1:-1]  == "54/80":
                         # Checking for instances of (OPEN) (60/90) or (54/80)
-                        joined_string = " ".join(text.split(" ")[1:])
-                        print(joined_string)
+                        s1 = text.split(" ")[1][1:-1]
+                        s2 = text.split(" ")[2][1:-1]
+                        joined_string = str(s1) + " " + str(s2)  
                         self.output["Age Group:"][text.split(" ")[0]] = [joined_string]
                     else:
                         self.output["Age Group:"][text.split(" ")[0]] = [text.split(" ")[1][1:-1]]
@@ -146,39 +148,42 @@ class Grouped:
 
 event = Grouped()
 
-print("Grouped Events -------------> 1")
-print("Individual Event -----------> 2")
-print("Exit -----------------------> 3")
-selection = int(input("Please Select an Option > "))
+event.create_url("https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8468")
+pp.pprint(event.retuen_all())
 
-if selection == 1:
-    try:
-        event_amount = int(input("Enter the number of events >"))
-        count = event_amount 
-        while count > 0:
-            url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
-            event.create_url(url)
-            count -= 1
+# print("Grouped Events -------------> 1")
+# print("Individual Event -----------> 2")
+# print("Exit -----------------------> 3")
+# selection = int(input("Please Select an Option > "))
+
+# if selection == 1:
+#     try:
+#         event_amount = int(input("Enter the number of events >"))
+#         count = event_amount 
+#         while count > 0:
+#             url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
+#             event.create_url(url)
+#             count -= 1
     
 
-        print()
-        print("----------------PRINTING----------------DATA----------------")
-        print()
+#         print()
+#         print("----------------PRINTING----------------DATA----------------")
+#         print()
 
-        all_data = event.retuen_all()
-        event_count = 1
-        for event in all_data:
-            print("EVENT #%s" % event_count)
-            print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
-            print("Event Dates:" + " " + str(event["Event Dates:"]))
-            print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
-            print("Location:" + " " + str(event["Location:"]))
-            print("Age Group:" + " " + str(event["Age Group:"]))
-            print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
-            print("Link for event:" + " " + str(event["Link for event:"]))
-            print()
+#         all_data = event.retuen_all()
+#         event_count = 1
+#         for event in all_data:
+#             print("EVENT #%s" % event_count)
+#             print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
+#             print("Event Dates:" + " " + str(event["Event Dates:"]))
+#             print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
+#             print("Location:" + " " + str(event["Location:"]))
+#             print("Age Group:" + " " + str(event["Age Group:"]))
+#             print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
+#             print("Link for event:" + " " + str(event["Link for event:"]))
+#             print()
             
-            event_count += 1
+#             event_count += 1
 
-    except:
-        exit()
+#     except:
+#         exit()
