@@ -27,6 +27,7 @@ class Grouped:
             "Specific Benefits/Callouts:": None, 
             "Link for event:": None
         }
+        self._age_groups = ["6U", "7U","8U", "9U", "10U", "11U", "12U", "13U", "14U", "15U", "16U", "17U", "18U"]
     
     def create_url(self, url):
         """
@@ -108,6 +109,7 @@ class Grouped:
 
             else:
                 if len(text.split(" ")) == 1:
+                    self.output["Age Group:"][text.split(" ")[0]] = []
                     continue
                 else:
                     if text.split(" ")[-1][1:-1] == "60/90" or text.split(" ")[-1][1:-1]  == "54/80":
@@ -125,6 +127,7 @@ class Grouped:
         
         # Set location
         self.output["Location:"] = self._event_city_state
+        self.format_ages()
         self._mulit_event_output.append(self.output)
 
         # Reset output for next event
@@ -146,44 +149,62 @@ class Grouped:
         return self._mulit_event_output
 
 
+    def format_ages(self):
+        temp_list = []
+        data =self.output['Age Group:']
+        print(self.output["Age Group:"])
+        for i in self._age_groups:
+            if i in data:
+                temp_hold = "%s " % i
+                for j in data[i]:
+                    if len(data[i]) > 1:
+                        temp_hold += "%s/" % j
+                    else:
+                        temp_hold += "%s " % j
+                temp_list.append(temp_hold[:-1] + ",")
+
+        self.output["Age Group:"] = " ".join(temp_list)[:-1]
+
+        
+
 event = Grouped()
 
-event.create_url("https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8468")
-pp.pprint(event.retuen_all())
+# event.create_url("https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8389")
+# pp.pprint(event.retuen_all())
 
-# print("Grouped Events -------------> 1")
-# print("Individual Event -----------> 2")
-# print("Exit -----------------------> 3")
-# selection = int(input("Please Select an Option > "))
+print("Grouped Events -------------> 1")
+print("Individual Event -----------> 2")
+print("Exit -----------------------> 3")
+selection = int(input("Please Select an Option > "))
 
-# if selection == 1:
-#     try:
-#         event_amount = int(input("Enter the number of events >"))
-#         count = event_amount 
-#         while count > 0:
-#             url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
-#             event.create_url(url)
-#             count -= 1
+if selection == 1:
+    try:
+        event_amount = int(input("Enter the number of events >"))
+        count = event_amount 
+        while count > 0:
+            url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
+            event.create_url(url)
+            count -= 1
     
 
-#         print()
-#         print("----------------PRINTING----------------DATA----------------")
-#         print()
+        print()
+        print("----------------PRINTING----------------DATA----------------")
+        print()
 
-#         all_data = event.retuen_all()
-#         event_count = 1
-#         for event in all_data:
-#             print("EVENT #%s" % event_count)
-#             print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
-#             print("Event Dates:" + " " + str(event["Event Dates:"]))
-#             print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
-#             print("Location:" + " " + str(event["Location:"]))
-#             print("Age Group:" + " " + str(event["Age Group:"]))
-#             print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
-#             print("Link for event:" + " " + str(event["Link for event:"]))
-#             print()
+        all_data = event.retuen_all()
+        event_count = 1
+        for event in all_data:
+            print("EVENT #%s" % event_count)
+            print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
+            print("Event Dates:" + " " + str(event["Event Dates:"]))
+            print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
+            print("Location:" + " " + str(event["Location:"]))
+            print("Age Group:" + " " + str(event["Age Group:"]))
+            print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
+            print("Link for event:" + " " + str(event["Link for event:"]))
+            print()
             
-#             event_count += 1
+            event_count += 1
 
-#     except:
-#         exit()
+    except:
+        exit()
