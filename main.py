@@ -6,7 +6,7 @@ import re
 
 class Grouped:
     """
-    Class to handle events that are grouped
+    Class to handle events that are grouped ( Event Length > 1 )
     Initial arg is the url
     """
 
@@ -87,20 +87,35 @@ class Grouped:
         """
         Cleaning the data to be copy and pasted from console
         """
- 
         # Find longest event length date and change as needed 
         for date in self._event_dates:
             if self.output["Event Dates:"] is None or int(self.output["Event Dates:"][-1] )< int(date.get_text()[-1]):
                  self.output["Event Dates:"] = date.get_text()
-        
         # Append all ages 
         for age in self._event_ages_and_divisions:
             text = age.get_text()
             # Reformat
+
             if text.split(" ")[0] in self.output["Age Group:"]:
-                self.output["Age Group:"][text.split(" ")[0]].append(text.split(" ")[1][1:-1])
+                if text.split(" ")[-1][1:-1] == "60/90" or text.split(" ")[-1][1:-1]  == "54/80":
+                    # Checking for instances of (OPEN) (60/90) or (54/80)
+                    joined_string = " ".join(text.split(" ")[1:])
+                    print(joined_string)
+                    self.output["Age Group:"][text.split(" ")[0]] = [joined_string]
+                else:
+                    self.output["Age Group:"][text.split(" ")[0]].append(text.split(" ")[1][1:-1])
+
             else:
-                self.output["Age Group:"][text.split(" ")[0]] = [text.split(" ")[1][1:-1]]
+                if len(text.split(" ")) == 1:
+                    continue
+                else:
+                    if text.split(" ")[-1][1:-1] == "60/90" or text.split(" ")[-1][1:-1]  == "54/80":
+                        # Checking for instances of (OPEN) (60/90) or (54/80)
+                        joined_string = " ".join(text.split(" ")[1:])
+                        print(joined_string)
+                        self.output["Age Group:"][text.split(" ")[0]] = [joined_string]
+                    else:
+                        self.output["Age Group:"][text.split(" ")[0]] = [text.split(" ")[1][1:-1]]
         
 
         # Set field name 
@@ -129,18 +144,11 @@ class Grouped:
         return self._mulit_event_output
 
 
-
-
-
-
-
 event = Grouped()
-#event.create_url("https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8122")
 
-
-print("Grouped Events: 1")
-print("Individual Event: 2")
-print("Exit: 3")
+print("Grouped Events -------------> 1")
+print("Individual Event -----------> 2")
+print("Exit -----------------------> 3")
 selection = int(input("Please Select an Option > "))
 
 if selection == 1:
@@ -161,24 +169,16 @@ if selection == 1:
         event_count = 1
         for event in all_data:
             print("EVENT #%s" % event_count)
-            print("Headline/Tournament Name:" + str(event["Headline/Tournament Name:"]))
-            print("Event Dates:" + str(event["Event Dates:"]))
-            print("Facility/Field Name:" + str(event["Facility/Field Name:"]))
-            print("Location:" + str(event["Location:"]))
-            print("Age Group:" + str(event["Age Group:"]))
-            print("Specific Benefits/Callouts:" + str(event["Specific Benefits/Callouts:"]))
-            print("Link for event:" + str(event["Link for event:"]))
+            print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
+            print("Event Dates:" + " " + str(event["Event Dates:"]))
+            print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
+            print("Location:" + " " + str(event["Location:"]))
+            print("Age Group:" + " " + str(event["Age Group:"]))
+            print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
+            print("Link for event:" + " " + str(event["Link for event:"]))
             print()
             
             event_count += 1
 
-
-
     except:
         exit()
-
- # https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8122
-# https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8116
-        
-# https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=17725
-    
