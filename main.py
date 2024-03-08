@@ -17,12 +17,13 @@ class Grouped:
         self._event_ballparks = None
         self._event_city_state = None
         self._event_ages_and_divisions = None
+        self._mulit_event_output = []
         self.output = {
             "Headline/Tournament Name:": None,
             "Event Dates:" : None,
             "Facility/Field Name:": None, 
             "Location:": None,
-            "Age Group:" : [], 
+            "Age Group:" : {}, 
             "Specific Benefits/Callouts:": None, 
             "Link for event:": url
         }
@@ -85,7 +86,12 @@ class Grouped:
         
         # Append all ages 
         for age in self._event_ages_and_divisions:
-            self.output["Age Group:"].append(age.get_text())
+            text = age.get_text()
+            if text.split(" ")[0] in self.output["Age Group:"]:
+                self.output["Age Group:"][text.split(" ")[0]].append(text.split(" ")[1][1:-1])
+            else:
+                self.output["Age Group:"][text.split(" ")[0]] = [text.split(" ")[1][1:-1]]
+        
 
         # Set field name 
         self.output["Facility/Field Name:"] = self._event_ballparks
