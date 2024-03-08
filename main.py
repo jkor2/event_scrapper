@@ -187,39 +187,43 @@ event = Grouped()
 # event.create_url("https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8389")
 # pp.pprint(event.return_all())
 
-print("Grouped Events -------------> 1")
-print("Individual Event -----------> 2")
-print("Exit -----------------------> 3")
-selection = int(input("Please Select an Option > "))
+while True:
 
-if selection == 1:
-    try:
-        event_amount = int(input("Enter the number of events >"))
-        count = event_amount 
-        while count > 0:
-            url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
-            event.create_url(url)
-            count -= 1
+    print("Grouped Events -------------> 1")
+    print("Individual Event -----------> 2")
+    print("Exit -----------------------> 3")
+    selection = int(input("Please Select an Option > "))
+
+    if selection == 1:
+        try:
+            event_amount = int(input("Enter the number of events >"))
+            count = event_amount 
+            while count > 0:
+                url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
+                event.create_url(url)
+                count -= 1
     
 
-        print()
-        print("----------------PRINTING----------------DATA----------------")
-        print()
-
-        all_data = event.return_all()
-        event_count = 1
-        for event in all_data:
-            print("EVENT #%s" % event_count)
-            print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
-            print("Event Dates:" + " " + str(event["Event Dates:"]))
-            print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
-            print("Location:" + " " + str(event["Location:"]))
-            print("Age Group:" + " " + str(event["Age Group:"]))
-            print("Link for event:" + " " + str(event["Link for event:"]))
-            print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
             print()
-            
-            event_count += 1
+            print("----------------PRINTING----------------DATA----------------")
+            print()
 
-    except:
-        exit()
+            all_data = event.return_all()
+            event_count = 1
+            for event in all_data:
+                print("EVENT #%s" % event_count)
+                print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
+                print("Event Dates:" + " " + str(event["Event Dates:"]))
+                print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
+                print("Location:" + " " + str(event["Location:"]))
+                print("Age Group:" + " " + str(event["Age Group:"]))
+                print("Link for event:" + " " + str(event["Link for event:"]))
+                print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
+                print()
+            
+                event_count += 1
+
+        except:
+            exit()
+    elif selection != 2:
+        exit() 
