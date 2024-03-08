@@ -227,3 +227,10 @@ while True:
             exit()
     elif selection != 2:
         exit() 
+
+
+"""
+Need to handle instacnes like 13u and 14u in this event
+
+https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8117
+"""
