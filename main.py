@@ -102,7 +102,7 @@ class Grouped:
                     # Checking for instances of (OPEN) (60/90) or (54/80)
                     s1 = text.split(" ")[1][1:-1]
                     s2 = text.split(" ")[2][1:-1]
-                    joined_string = str(s1) + " " + str(s2)  
+                    joined_string = str(s1) + " " + str(s2) 
                     self.output["Age Group:"][text.split(" ")[0]].append(" & %s" % joined_string)
                 else:
                     self.output["Age Group:"][text.split(" ")[0]].append(text.split(" ")[1][1:-1])
@@ -117,6 +117,7 @@ class Grouped:
                         s1 = text.split(" ")[1][1:-1]
                         s2 = text.split(" ")[2][1:-1]
                         joined_string = str(s1) + " " + str(s2)  
+                        print(joined_string)
                         self.output["Age Group:"][text.split(" ")[0]] = [joined_string]
                     else:
                         self.output["Age Group:"][text.split(" ")[0]] = [text.split(" ")[1][1:-1]]
@@ -173,10 +174,18 @@ class Grouped:
                 temp_hold = "%s " % i
                 for j in data[i]:
                     if len(data[i]) > 1:
-                        temp_hold += "%s/" % j
+                        # Appending differntly based on unique instance of a division
+                        if data[i][0][-1] == "0":
+                            # Handle when a division specifies field dimensions
+                            temp_hold += "%s" % j
+                            temp_list.append(temp_hold + ",")
+                        else:
+                            # Handle when there are no field dimensions
+                            temp_hold += "%s/" % j
+                            temp_list.append(temp_hold[:-1] + ",")
                     else:
                         temp_hold += "%s " % j
-                temp_list.append(temp_hold[:-1] + ",")
+                        temp_list.append(temp_hold[:-1] + ",")
 
         self.output["Age Group:"] = " ".join(temp_list)[:-1]
 
