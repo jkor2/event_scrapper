@@ -103,7 +103,7 @@ class Grouped:
                     s1 = text.split(" ")[1][1:-1]
                     s2 = text.split(" ")[2][1:-1]
                     joined_string = str(s1) + " " + str(s2)  
-                    self.output["Age Group:"][text.split(" ")[0]] = [joined_string]
+                    self.output["Age Group:"][text.split(" ")[0]].append(" & %s" % joined_string)
                 else:
                     self.output["Age Group:"][text.split(" ")[0]].append(text.split(" ")[1][1:-1])
 
@@ -229,8 +229,3 @@ while True:
         exit() 
 
 
-"""
-Need to handle instacnes like 13u and 14u in this event
-
-https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8117
-"""
