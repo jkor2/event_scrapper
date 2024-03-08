@@ -178,14 +178,18 @@ class Grouped:
                         if data[i][0][-1] == "0":
                             # Handle when a division specifies field dimensions
                             temp_hold += "%s" % j
-                            temp_list.append(temp_hold + ",")
                         else:
                             # Handle when there are no field dimensions
                             temp_hold += "%s/" % j
-                            temp_list.append(temp_hold[:-1] + ",")
                     else:
                         temp_hold += "%s " % j
-                        temp_list.append(temp_hold[:-1] + ",")
+                
+                print(temp_hold)
+                if temp_hold[-1] == "0":
+                    temp_list.append(temp_hold + ",")
+                else:
+                    temp_list.append(temp_hold[:-1] + ",")
+                
 
         self.output["Age Group:"] = " ".join(temp_list)[:-1]
 
