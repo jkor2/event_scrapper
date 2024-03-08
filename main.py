@@ -32,7 +32,6 @@ class DetermineEventType:
                 return True
             else:
                 return False
-            
 
         
     
@@ -234,9 +233,30 @@ class Grouped:
         self.output["Age Group:"] = " ".join(temp_list)[:-1]
 
         
+class IndividualEvent:
+    def __init__(self) -> None:
+        self._url = None
+
+    def create_url(self, value):
+        """
+        Assign and check event type
+        """
+        self._url = value
+
+        check_event_type = DetermineEventType(self._url)
+        
+        if check_event_type.determine(2):
+            # Call method to handle scraping the woloe event
+            pass
+        else:
+            # Call grouped event class, return the event formatted correctly 
+            # and add to output variable 
+            pass
+            
+     
 
 event = Grouped()
-
+event2 = IndividualEvent()
 
 while True:
 
