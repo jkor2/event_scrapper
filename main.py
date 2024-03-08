@@ -34,6 +34,9 @@ class Grouped:
         self._url = url
 
     def _http_request(self):
+        """
+        Make inital request and grab needed data 
+        """
         if not self._url:
             return "Error - invalid url"
         
@@ -64,26 +67,16 @@ class Grouped:
             event_age_and_divsion = soup.find_all(id=pattern_age_and_division)           
             self._event_ages_and_divisions = event_age_and_divsion
             
-
-
-            # pattern_all = re.compile(r'ContentTopLevel_ContentPlaceHolder1_repSchedule_lbl.+') 
-            # events = soup.find_all(id=pattern_all)           
-            # pp.pprint(events)           
-            
-            
-            
-            
             return self.clean_data()                       
 
         except:
             print("WARNING: URL INVALID")
         
-        # Request 
-        # Turn website in soup object 
-        # Assign soup object to a variable 
-        pass
 
     def clean_data(self):
+        """
+        Cleaning the data to be copy and pasted from console
+        """
  
         # Find longest event length date and change as needed 
         for date in self._event_dates:
@@ -106,11 +99,6 @@ class Grouped:
 
 
 
-
-    def _format_data(self, data):
-        # Convert the data into easy copy and pastable format 
-        # Output
-        pass
 
 
 
