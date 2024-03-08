@@ -184,7 +184,6 @@ class Grouped:
                     else:
                         temp_hold += "%s " % j
                 
-                print(temp_hold)
                 if temp_hold[-1] == "0":
                     temp_list.append(temp_hold + ",")
                 else:
