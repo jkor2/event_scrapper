@@ -1,3 +1,14 @@
+"""
+Need to check url to determine which class is better for the scrape
+Check url endpoint, if GroupedEvents present, run grouped class
+if not, run individual event class
+
+
+Need to add in a method to handle all individual event links at once
+EX: Past in 3 individual links and output scraped/reformatted data
+
+"""
+
 import requests
 from bs4 import BeautifulSoup
 import pprint as pp
