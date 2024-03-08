@@ -193,8 +193,6 @@ class Grouped:
 
 event = Grouped()
 
-# event.create_url("https://www.perfectgame.org/Schedule/GroupedEvents.aspx?gid=8389")
-# pp.pprint(event.return_all())
 
 while True:
 
