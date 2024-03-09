@@ -70,7 +70,12 @@ class Grouped:
         if check_event_type.determine(1):
             self._http_request()
         else:
-            print("Error, incorrect type of event found.... skipping for now")
+            single_event = IndividualEvent()
+        
+            
+            single_event.create_url(self._url)
+            self._mulit_event_output.append(single_event.output_data())
+
             # Eventually will run the single event class, crawl, and append ti output
 
     def _http_request(self):
@@ -271,90 +276,103 @@ class IndividualEvent:
             pass
     
     def _http_request(self):
-        # event pattern = ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblEventNameNew
-        # Grab webpage & create soup object
-        webpage = requests.get(self._url, 'html.parser')        
-        soup = BeautifulSoup(webpage.content, features="lxml")                   
-
-        # Set event url 
-        self.output["Link for event:"] = self._url
-        
-        # Find eventname
-        pattern_event_name = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblEventNameNew')
-        event_name = soup.find(id=pattern_event_name)
-        self.output["Headline/Tournament Name:"] = event_name.get_text()
-
-
-        # Handle Facility Name -- facility and city/state are connected 
-        pattern_ballpark = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblEventLocaGeneral') 
-        event_ballpark = soup.find_all(id=pattern_ballpark)           
-        
-        # Split and assign
-        self.output["Event Dates:"] = event_ballpark[-1].get_text().split(" | ")[0]             
-        self.output["Location:"]  =  event_ballpark[-1].get_text().split(" | ")[1]   
+        """
+        Request, scrape, and assign
+        """
 
         
+        try:
+        
+            # Grab webpage & create soup object
+            webpage = requests.get(self._url, 'html.parser')        
+            soup = BeautifulSoup(webpage.content, features="lxml")                   
+
+            # Set event url 
+            self.output["Link for event:"] = self._url
+        
+            # Find eventname
+            pattern_event_name = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblEventNameNew')
+            event_name = soup.find(id=pattern_event_name)
+            self.output["Headline/Tournament Name:"] = event_name.get_text()
+
+
+            # Handle Facility Name -- facility and city/state are connected 
+            pattern_ballpark = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblEventLocaGeneral') 
+            event_ballpark = soup.find_all(id=pattern_ballpark)           
+        
+            # Split and assign
+            self.output["Facility/Field Name:"] = event_ballpark[-1].get_text().split(" | ")[0]             
+            self.output["Location:"]  =  event_ballpark[-1].get_text().split(" | ")[1]   
             
-        #Handle Ages and Divisions -- different as age is in headline, will utilize age_group dictionary 
-        pattern_event_age = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblEventNameNew')
-        event_age = soup.find(id=pattern_event_age).get_text().split(" ")
-        for age in event_age:
-            if age in self._age_dictionary:
-                self.output["Age Group:"] = age
+            #Handle Ages and Divisions -- different as age is in headline, will utilize age_group dictionary 
+            pattern_event_age = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblEventNameNew')
+            event_age = soup.find(id=pattern_event_age).get_text().split(" ")
+            for age in event_age:
+                if age.upper() in self._age_dictionary:
+                    self.output["Age Group:"] = age
 
-        # # Dates
-        pattern_dates = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblDatesNew') 
-        event_dates = soup.find(id=pattern_dates).get_text()          
-        self.output["Event Dates:"] = event_dates       
+            # # Dates
+            pattern_dates = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblDatesNew') 
+            event_dates = soup.find(id=pattern_dates).get_text()          
+            self.output["Event Dates:"] = event_dates
+        except:
+            print("Erorr")
+            exit()
+
+
+    def output_data(self):
         
+        return self.output
+    
+
             
 
 
      
 
 event = Grouped()
-event2 = IndividualEvent()
-event2.create_url("https://www.perfectgame.org/Events/Default.aspx?event=85138")
+# event2 = IndividualEvent()
+# event2.create_url("https://www.perfectgame.org/Events/Default.aspx?event=85138")
 
-# while True:
+while True:
 
-#     print("Grouped Events -------------> 1")
-#     print("Individual Event -----------> 2")
-#     print("Exit -----------------------> 3")
-#     selection = int(input("Please Select an Option > "))
+    print("Grouped Events -------------> 1")
+    print("Individual Event -----------> 2")
+    print("Exit -----------------------> 3")
+    selection = int(input("Please Select an Option > "))
 
-#     if selection == 1:
-#         try:
-#             event_amount = int(input("Enter the number of events >"))
-#             count = event_amount 
-#             while count > 0:
-#                 url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
-#                 event.create_url(url)
-#                 count -= 1
+    if selection == 1:
+        try:
+            event_amount = int(input("Enter the number of events >"))
+            count = event_amount 
+            while count > 0:
+                url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
+                event.create_url(url)
+                count -= 1
     
 
-#             print()
-#             print("----------------PRINTING----------------DATA----------------")
-#             print()
+            print()
+            print("----------------PRINTING----------------DATA----------------")
+            print()
 
-#             all_data = event.return_all()
-#             event_count = 1
-#             for event in all_data:
-#                 print("EVENT #%s" % event_count)
-#                 print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
-#                 print("Event Dates:" + " " + str(event["Event Dates:"]))
-#                 print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
-#                 print("Location:" + " " + str(event["Location:"]))
-#                 print("Age Group:" + " " + str(event["Age Group:"]))
-#                 print("Link for event:" + " " + str(event["Link for event:"]))
-#                 print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
-#                 print()
+            all_data = event.return_all()
+            event_count = 1
+            for event in all_data:
+                print("EVENT #%s" % event_count)
+                print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
+                print("Event Dates:" + " " + str(event["Event Dates:"]))
+                print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
+                print("Location:" + " " + str(event["Location:"]))
+                print("Age Group:" + " " + str(event["Age Group:"]))
+                print("Link for event:" + " " + str(event["Link for event:"]))
+                print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
+                print()
             
-#                 event_count += 1
+                event_count += 1
 
-#         except:
-#             exit()
-#     elif selection != 2:
-#         exit() 
+        except:
+            exit()
+    elif selection != 2:
+        exit() 
 
 
