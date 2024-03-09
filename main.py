@@ -21,8 +21,6 @@ class DetermineEventType:
             else:
                 return False
 
-        
-    
 class Grouped:
     """
     Class to handle events that are grouped ( Event Length > 1 )
@@ -136,16 +134,11 @@ class Grouped:
                     s2 = text.split(" ")[2][1:-1]
                     joined_string = str(s1) + " " + str(s2) 
                     self.output["Age Group:"][text.split(" ")[0]].append(" & %s" % joined_string)
-                    print(1)
                 else:
-                    print(self.output["Age Group:"])
                     self.output["Age Group:"][text.split(" ")[0]].append(text.split(" ")[1][1:-1])
-                    print(self.output["Age Group:"])
             else:
                 if len(text.split(" ")) == 1:
                     self.output["Age Group:"][text.split(" ")[0]] = []
-                    print(3)
-                    continue
                 else:
                     if text.split(" ")[-1][1:-1] == "60/90" or text.split(" ")[-1][1:-1]  == "54/80":
                         # Checking for instances of (OPEN) (60/90) or (54/80)
@@ -153,10 +146,8 @@ class Grouped:
                         s2 = text.split(" ")[2][1:-1]
                         joined_string = str(s1) + " " + str(s2)  
                         self.output["Age Group:"][text.split(" ")[0]] = [joined_string]
-                        print(4)
                     else:
                         self.output["Age Group:"][text.split(" ")[0]] = [text.split(" ")[1][1:-1]]
-                        print(5)
 
         # Set field name 
         self.output["Facility/Field Name:"] = self._event_ballparks
