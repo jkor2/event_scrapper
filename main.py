@@ -245,6 +245,13 @@ class IndividualEvent:
             "Link for event:": None
         }
         self._age_groups = ["6U", "7U","8U", "9U", "10U", "11U", "12U", "13U", "14U", "15U", "16U", "17U", "18U"]
+        self._event_dates = None
+        self._event_ballparks = None
+        self._event_city_state = None
+        self._event_ages_and_divisions = None
+        self._age_dictionary = {
+            "6U":"6U", "7U":"7U","8U":"8U", "9U":"9U", "10U":"10U", "11U":"11U", "12U":"12U", "13U":"13U", "14U":"14U", "15U":"15U", "16U":"16U", "17U":"17U", "18U":"18U"
+        }
     
 
     def create_url(self, value):
@@ -277,9 +284,32 @@ class IndividualEvent:
         event_name = soup.find(id=pattern_event_name)
         self.output["Headline/Tournament Name:"] = event_name.get_text()
 
-        pp.pprint(self.output)
 
+        # Handle Facility Name -- facility and city/state are connected 
+        pattern_ballpark = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblEventLocaGeneral') 
+        event_ballpark = soup.find_all(id=pattern_ballpark)           
+        
+        # Split and assign
+        self.output["Event Dates:"] = event_ballpark[-1].get_text().split(" | ")[0]             
+        self.output["Location:"]  =  event_ballpark[-1].get_text().split(" | ")[1]   
+
+        
             
+        #Handle Ages and Divisions -- different as age is in headline, will utilize age_group dictionary 
+        pattern_event_age = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblEventNameNew')
+        event_age = soup.find(id=pattern_event_age).get_text().split(" ")
+        for age in event_age:
+            if age in self._age_dictionary:
+                self.output["Age Group:"] = age
+
+        # # Dates
+        pattern_dates = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblDatesNew') 
+        event_dates = soup.find(id=pattern_dates).get_text()          
+        self.output["Event Dates:"] = event_dates       
+        
+            
+
+
      
 
 event = Grouped()
