@@ -249,9 +249,7 @@ class IndividualEvent:
             # Call method to handle scraping the woloe event
             self._http_request()
         else:
-            # Call grouped event class, return the event formatted correctly 
-            # and add to output variable 
-            pass
+            return False
     
     def _http_request(self):
         """
