@@ -127,8 +127,8 @@ class Grouped:
         # Append all ages 
         for age in self._event_ages_and_divisions:
             text = age.get_text()
+            
             # Reformat
-
             if text.split(" ")[0] in self.output["Age Group:"]:
                 if text.split(" ")[-1][1:-1] == "60/90" or text.split(" ")[-1][1:-1]  == "54/80":
                     # Checking for instances of (OPEN) (60/90) or (54/80)
@@ -136,12 +136,15 @@ class Grouped:
                     s2 = text.split(" ")[2][1:-1]
                     joined_string = str(s1) + " " + str(s2) 
                     self.output["Age Group:"][text.split(" ")[0]].append(" & %s" % joined_string)
+                    print(1)
                 else:
+                    print(self.output["Age Group:"])
                     self.output["Age Group:"][text.split(" ")[0]].append(text.split(" ")[1][1:-1])
-
+                    print(self.output["Age Group:"])
             else:
                 if len(text.split(" ")) == 1:
                     self.output["Age Group:"][text.split(" ")[0]] = []
+                    print(3)
                     continue
                 else:
                     if text.split(" ")[-1][1:-1] == "60/90" or text.split(" ")[-1][1:-1]  == "54/80":
@@ -149,11 +152,11 @@ class Grouped:
                         s1 = text.split(" ")[1][1:-1]
                         s2 = text.split(" ")[2][1:-1]
                         joined_string = str(s1) + " " + str(s2)  
-                        print(joined_string)
                         self.output["Age Group:"][text.split(" ")[0]] = [joined_string]
+                        print(4)
                     else:
                         self.output["Age Group:"][text.split(" ")[0]] = [text.split(" ")[1][1:-1]]
-        
+                        print(5)
 
         # Set field name 
         self.output["Facility/Field Name:"] = self._event_ballparks
@@ -205,6 +208,7 @@ class Grouped:
             if i in data:
                 temp_hold = "%s " % i
                 for j in data[i]:
+                    print(len(data[i]))
                     if len(data[i]) > 1:
                         # Appending differntly based on unique instance of a division
                         if data[i][0][-1] == "0":
@@ -212,6 +216,7 @@ class Grouped:
                             temp_hold += "%s" % j
                         else:
                             # Handle when there are no field dimensions
+                            print(99)
                             temp_hold += "%s/" % j
                     else:
                         temp_hold += "%s " % j
@@ -342,6 +347,3 @@ while True:
 
     except:
         exit()
-
-
-
