@@ -23,7 +23,6 @@ class DetermineEventType:
     def determine(self, type):
         if self._url.split("https://www.perfectgame.org/")[1].split("/")[0] == 'Schedule':
             if type == 1: # Grouped Event
-                print("True")
                 return True
             else:
                 return False
@@ -236,6 +235,17 @@ class Grouped:
 class IndividualEvent:
     def __init__(self) -> None:
         self._url = None
+        self.output = {
+            "Headline/Tournament Name:": None,
+            "Event Dates:" : None,
+            "Facility/Field Name:": None, 
+            "Location:": None,
+            "Age Group:" : {}, 
+            "Specific Benefits/Callouts:": None, 
+            "Link for event:": None
+        }
+        self._age_groups = ["6U", "7U","8U", "9U", "10U", "11U", "12U", "13U", "14U", "15U", "16U", "17U", "18U"]
+    
 
     def create_url(self, value):
         """
@@ -247,56 +257,74 @@ class IndividualEvent:
         
         if check_event_type.determine(2):
             # Call method to handle scraping the woloe event
-            pass
+            self._http_request()
         else:
             # Call grouped event class, return the event formatted correctly 
             # and add to output variable 
             pass
+    
+    def _http_request(self):
+        # event pattern = ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblEventNameNew
+        # Grab webpage & create soup object
+        webpage = requests.get(self._url, 'html.parser')        
+        soup = BeautifulSoup(webpage.content, features="lxml")                   
+
+        # Set event url 
+        self.output["Link for event:"] = self._url
+        
+        # Find eventname
+        pattern_event_name = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblEventNameNew')
+        event_name = soup.find(id=pattern_event_name)
+        self.output["Headline/Tournament Name:"] = event_name.get_text()
+
+        pp.pprint(self.output)
+
             
      
 
 event = Grouped()
 event2 = IndividualEvent()
+event2.create_url("https://www.perfectgame.org/Events/Default.aspx?event=85138")
 
-while True:
+# while True:
 
-    print("Grouped Events -------------> 1")
-    print("Individual Event -----------> 2")
-    print("Exit -----------------------> 3")
-    selection = int(input("Please Select an Option > "))
+#     print("Grouped Events -------------> 1")
+#     print("Individual Event -----------> 2")
+#     print("Exit -----------------------> 3")
+#     selection = int(input("Please Select an Option > "))
 
-    if selection == 1:
-        try:
-            event_amount = int(input("Enter the number of events >"))
-            count = event_amount 
-            while count > 0:
-                url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
-                event.create_url(url)
-                count -= 1
+#     if selection == 1:
+#         try:
+#             event_amount = int(input("Enter the number of events >"))
+#             count = event_amount 
+#             while count > 0:
+#                 url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
+#                 event.create_url(url)
+#                 count -= 1
     
 
-            print()
-            print("----------------PRINTING----------------DATA----------------")
-            print()
+#             print()
+#             print("----------------PRINTING----------------DATA----------------")
+#             print()
 
-            all_data = event.return_all()
-            event_count = 1
-            for event in all_data:
-                print("EVENT #%s" % event_count)
-                print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
-                print("Event Dates:" + " " + str(event["Event Dates:"]))
-                print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
-                print("Location:" + " " + str(event["Location:"]))
-                print("Age Group:" + " " + str(event["Age Group:"]))
-                print("Link for event:" + " " + str(event["Link for event:"]))
-                print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
-                print()
+#             all_data = event.return_all()
+#             event_count = 1
+#             for event in all_data:
+#                 print("EVENT #%s" % event_count)
+#                 print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
+#                 print("Event Dates:" + " " + str(event["Event Dates:"]))
+#                 print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
+#                 print("Location:" + " " + str(event["Location:"]))
+#                 print("Age Group:" + " " + str(event["Age Group:"]))
+#                 print("Link for event:" + " " + str(event["Link for event:"]))
+#                 print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
+#                 print()
             
-                event_count += 1
+#                 event_count += 1
 
-        except:
-            exit()
-    elif selection != 2:
-        exit() 
+#         except:
+#             exit()
+#     elif selection != 2:
+#         exit() 
 
 
