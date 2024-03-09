@@ -112,6 +112,7 @@ class Grouped:
         except:
             # Main Error 
             print("Please Restart")
+            exit()
         
 
     def clean_data(self):
