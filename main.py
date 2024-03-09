@@ -187,7 +187,7 @@ class Grouped:
         Format age groups to an easy copy and paste string
         """
         temp_list = []
-        data =self.output['Age Group:']
+        data = self.output['Age Group:']
         
         # To confrim age and divisions in console
         print()
@@ -199,7 +199,6 @@ class Grouped:
             if i in data:
                 temp_hold = "%s " % i
                 for j in data[i]:
-                    print(len(data[i]))
                     if len(data[i]) > 1:
                         # Appending differntly based on unique instance of a division
                         if data[i][0][-1] == "0":
@@ -207,7 +206,6 @@ class Grouped:
                             temp_hold += "%s" % j
                         else:
                             # Handle when there are no field dimensions
-                            print(99)
                             temp_hold += "%s/" % j
                     else:
                         temp_hold += "%s " % j
