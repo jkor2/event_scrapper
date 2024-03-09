@@ -1,17 +1,6 @@
-"""
-Need to add in a method to handle all individual event links at once
-EX: Past in 3 individual links and output scraped/reformatted data
-
-Need to automatically pass the single events into the single event class to be handled, 
-returned, and appeneded to the current class
-
-"""
-
 import requests
 from bs4 import BeautifulSoup
-import pprint as pp
 import re
-
 
 class DetermineEventType:
     """
@@ -249,11 +238,6 @@ class IndividualEvent:
             "Specific Benefits/Callouts:": None, 
             "Link for event:": None
         }
-        self._age_groups = ["6U", "7U","8U", "9U", "10U", "11U", "12U", "13U", "14U", "15U", "16U", "17U", "18U"]
-        self._event_dates = None
-        self._event_ballparks = None
-        self._event_city_state = None
-        self._event_ages_and_divisions = None
         self._age_dictionary = {
             "6U":"6U", "7U":"7U","8U":"8U", "9U":"9U", "10U":"10U", "11U":"11U", "12U":"12U", "13U":"13U", "14U":"14U", "15U":"15U", "16U":"16U", "17U":"17U", "18U":"18U"
         }
@@ -279,10 +263,7 @@ class IndividualEvent:
         """
         Request, scrape, and assign
         """
-
-        
         try:
-        
             # Grab webpage & create soup object
             webpage = requests.get(self._url, 'html.parser')        
             soup = BeautifulSoup(webpage.content, features="lxml")                   
@@ -324,55 +305,43 @@ class IndividualEvent:
         
         return self.output
     
-
-            
-
-
-     
-
 event = Grouped()
-# event2 = IndividualEvent()
-# event2.create_url("https://www.perfectgame.org/Events/Default.aspx?event=85138")
 
 while True:
+    """
+    While loop to continue executing until exit
+    """
 
-    print("Grouped Events -------------> 1")
-    print("Individual Event -----------> 2")
-    print("Exit -----------------------> 3")
-    selection = int(input("Please Select an Option > "))
-
-    if selection == 1:
-        try:
-            event_amount = int(input("Enter the number of events >"))
-            count = event_amount 
-            while count > 0:
-                url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
-                event.create_url(url)
-                count -= 1
+    try:
+        event_amount = int(input("Enter the number of events >"))
+        count = event_amount 
+        while count > 0:
+            url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
+            event.create_url(url)
+            count -= 1
     
 
-            print()
-            print("----------------PRINTING----------------DATA----------------")
-            print()
+        print()
+        print("----------------PRINTING----------------DATA----------------")
+        print()
 
-            all_data = event.return_all()
-            event_count = 1
-            for event in all_data:
-                print("EVENT #%s" % event_count)
-                print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
-                print("Event Dates:" + " " + str(event["Event Dates:"]))
-                print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
-                print("Location:" + " " + str(event["Location:"]))
-                print("Age Group:" + " " + str(event["Age Group:"]))
-                print("Link for event:" + " " + str(event["Link for event:"]))
-                print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
-                print()
+        all_data = event.return_all()
+        event_count = 1
+        for event in all_data:
+            print("EVENT #%s" % event_count)
+            print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
+            print("Event Dates:" + " " + str(event["Event Dates:"]))
+            print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
+            print("Location:" + " " + str(event["Location:"]))
+            print("Age Group:" + " " + str(event["Age Group:"]))
+            print("Link for event:" + " " + str(event["Link for event:"]))
+            print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
+            print()
             
-                event_count += 1
+            event_count += 1
 
-        except:
-            exit()
-    elif selection != 2:
-        exit() 
+    except:
+        exit()
+
 
 
