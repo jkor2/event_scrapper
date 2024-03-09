@@ -307,7 +307,10 @@ class IndividualEvent:
 
 
     def output_data(self):
-        
+        """
+        Output of the single event object 
+        Do not need to reset as new instance will be created
+        """
         return self.output
     
 event = Grouped()
