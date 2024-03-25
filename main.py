@@ -63,7 +63,6 @@ class Grouped:
             single_event.create_url(self._url)
             self._mulit_event_output.append(single_event.output_data())
 
-            # Eventually will run the single event class, crawl, and append ti output
 
     def _http_request(self):
         """
@@ -174,8 +173,9 @@ class Grouped:
             "Age Group:" : {}, 
             "Specific Benefits/Callouts:": None, 
             "Link for event:": None
-        }        
-    
+        }
+
+        
     def return_all(self):
         """
         Returns all events stored
@@ -323,6 +323,7 @@ while True:
 
         all_data = event.return_all()
         event_count = 1
+
         for event in all_data:
             print("EVENT #%s" % event_count)
             print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
@@ -338,7 +339,9 @@ while True:
 
         print()
         print("-----------------------------------------------------------")
-
+        
+        # Exit for now after region is returned
+        exit()
 
     except:
         exit()
