@@ -1,6 +1,16 @@
+# To run in terminal
+# Clone or Download Repository
+# Navigate to file destination
+# Enter Command: Python main.py
+
 import requests
 from bs4 import BeautifulSoup
 import re
+import pandas as pd
+from openpyxl import load_workbook
+import pprint as pp
+import os
+
 
 class DetermineEventType:
     """
@@ -46,18 +56,23 @@ class Grouped:
             "Link for event:": None
         }
         self._age_groups = ["6U", "7U","8U", "9U", "10U", "11U", "12U", "13U", "14U", "15U", "16U", "17U", "18U"]
+        self._region = None
+        self._state = None
     
-    def create_url(self, url):
+    def create_url(self, url, region, state):
         """
         Create & update url
         """
         self._url = url
         check_event_type = DetermineEventType(self._url)
-        
+        self._region = region 
+        self._state = state
+
+
         if check_event_type.determine(1):
             self._http_request()
         else:
-            single_event = IndividualEvent()
+            single_event = IndividualEvent(self._region, self._state)
         
             
             single_event.create_url(self._url)
@@ -110,7 +125,7 @@ class Grouped:
 
         except:
             # Main Error 
-            print("Please Restart")
+            print("Please Restart, error on", pattern_group_name)
             exit()
         
 
@@ -155,6 +170,8 @@ class Grouped:
         # Set location
         self.output["Location:"] = self._event_city_state
         self.format_ages()
+        self.output["Region"] = self._region
+        self.output["State"] = self._state
         self._mulit_event_output.append(self.output)
 
         # Reset output for next event
@@ -191,10 +208,8 @@ class Grouped:
         data = self.output['Age Group:']
         
         # To confrim age and divisions in console
-        print()
-        print("AGE/Divisions for", self.output["Headline/Tournament Name:"])
-        print(data)
-        print()
+
+        print(self.output["Headline/Tournament Name:"], "complete.")
 
         for i in self._age_groups:
             if i in data:
@@ -222,7 +237,7 @@ class Grouped:
 
         
 class IndividualEvent:
-    def __init__(self) -> None:
+    def __init__(self, region, state) -> None:
         self._url = None
         self.output = {
             "Headline/Tournament Name:": None,
@@ -236,6 +251,8 @@ class IndividualEvent:
         self._age_dictionary = {
             "6U":"6U", "7U":"7U","8U":"8U", "9U":"9U", "10U":"10U", "11U":"11U", "12U":"12U", "13U":"13U", "14U":"14U", "15U":"15U", "16U":"16U", "17U":"17U", "18U":"18U"
         }
+        self._region = region
+        self._state = state
     
 
     def create_url(self, value):
@@ -289,6 +306,8 @@ class IndividualEvent:
             pattern_dates = re.compile(r'ContentTopLevel_ContentPlaceHolder1_EventHeader1_lblDatesNew') 
             event_dates = soup.find(id=pattern_dates).get_text()          
             self.output["Event Dates:"] = event_dates
+            self.output["Region"] = self._region
+            self.output["State"] = self._state
         except:
             print("Erorr")
             exit()
@@ -303,45 +322,133 @@ class IndividualEvent:
     
 event = Grouped()
 
+# Read the user input date range
+date_range = input("Enter the week to pull events for: ")
+
+# File path
+file_path = "2025 Event Email Marketing Calendar.xlsx"  # Replace with your file path
+
+# Load the workbook and sheet
+wb = load_workbook(file_path, data_only=True)
+sheet = wb.worksheets[1]  # Sheet index 1 (0-based index for second sheet)
+
+# Load the Excel file into a DataFrame
+df = pd.read_excel(file_path, sheet_name=1, engine="openpyxl")
+
+# Display DataFrame (Optional)
+
+# Find the starting row index where the 'Date' column matches the user input
+n = df[df['Date'] == date_range].index.min()
+
+events  = []
+
+if n is not None and not pd.isna(n):
+    # Initialize data storage for rows
+    row_data = {}
+    current_region = None
+    current_state = None
+
+    for row_idx in range(n + 2, n + 20):  # Iterate over the rows
+        for col_idx, cell in enumerate(sheet[row_idx], start=1):  # Iterate over cells in the row
+            # Check for region in column 2
+            if col_idx == 2:
+                if cell.value and cell.value != current_region:  # Detect a new region
+                    current_region = cell.value
+                    if current_region not in row_data:
+                        row_data[current_region] = {}  # Initialize state data as a dictionary
+
+            # Check for state in column 3
+            if col_idx == 3:
+                if cell.value and cell.value != current_state:  # Detect a new state
+                    current_state = cell.value
+                    if current_region and current_state:  # Ensure both region and state exist
+                        if current_state not in row_data[current_region]:
+                            row_data[current_region][current_state] = {}  # Initialize events as a dictionary
+
+            # Process events with hyperlinks (limit to columns F-R, i.e., 6-18 in 1-based index)
+            if 6 <= col_idx <= 18 and cell.hyperlink and cell.value:
+                # Ensure nested structure for events
+                if current_region and current_state:
+                    row_data[current_region][current_state][cell.value] = cell.hyperlink.target
+                    events.append([current_region ,current_state, cell.hyperlink.target])
+
+
+# Debug output to validate
+print()
+print("Events Found:")
+print(len(events), " total events.")
+print("-----------")
+print()
+
+import os
+
 while True:
     """
     While loop to continue executing until exit
     """
 
     try:
-        event_amount = int(input("Enter the number of events >"))
-        count = event_amount 
-        while count > 0:
-            url = str(input("Please enter the URL (remove all surrounding whitespace) > "))
-            event.create_url(url)
-            count -= 1
-    
+        event_amount = len(events)
+        if event_amount == 0:
+            exit()
+
+        for i in events:
+            url = i[2]
+            event.create_url(url, i[0], i[1])
 
         print()
-        print("----------------PRINTING----------------DATA----------------")
-        print()
+
+        # Capture printed output in a list
+        output_lines = []
 
         all_data = event.return_all()
         event_count = 1
 
+        current_event_region = None
+        current_event_state = None
+
         for event in all_data:
-            print("EVENT #%s" % event_count)
-            print("Headline/Tournament Name:" + " " + str(event["Headline/Tournament Name:"]))
-            print("Event Dates:" + " " + str(event["Event Dates:"]))
-            print("Facility/Field Name:" + " " + str(event["Facility/Field Name:"]))
-            print("Location:" + " " + str(event["Location:"]))
-            print("Age Group:" + " " + str(event["Age Group:"]))
-            print("Link for event:" + " " + str(event["Link for event:"]))
-            print("Specific Benefits/Callouts:" + " " + str(event["Specific Benefits/Callouts:"]))
-            print()
-            
+            if current_event_region is None or current_event_region != str(event["Region"]):
+                current_event_region = str(event["Region"])
+                output_lines.append("-------------------------------------")
+                output_lines.append(f"           {current_event_region}      ")
+                output_lines.append("-------------------------------------")
+            if current_event_state is None or current_event_state != str(event["State"]):
+                current_event_state = str(event["State"])
+                output_lines.append(f"----- {current_event_state} -----")
+
+            output_lines.append(str(event["Headline/Tournament Name:"]))
+            output_lines.append(str(event["Event Dates:"]))
+            output_lines.append(str(event["Facility/Field Name:"]))
+            output_lines.append(str(event["Location:"]))
+            output_lines.append(str(event["Age Group:"]))
+            output_lines.append(str(event["Link for event:"]))
+            output_lines.append("")  # Add a blank line for spacing
+
             event_count += 1
 
-        print()
-        print("-----------------------------------------------------------")
-        
+        output_lines.append("")
+        output_lines.append("-----------------------------------------------------------")
+
+        # Save output to a file
+        output_file = "Event_Details.txt"
+        with open(output_file, "w") as file:
+            file.write("\n".join(output_lines))
+
+        # Automatically open the file using the default text editor
+        if os.name == 'nt':  # Windows
+            os.startfile(output_file)
+        elif os.name == 'posix':  # macOS or Linux
+            os.system(f"open {output_file}")  # For macOS
+            # Use 'xdg-open' instead of 'open' for Linux
+
         # Exit for now after region is returned
         exit()
 
-    except:
+    except Exception as e:
+        print(f"An error occurred: {e}")
         exit()
+
+
+
+
