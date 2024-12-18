@@ -323,6 +323,8 @@ class IndividualEvent:
 event = Grouped()
 
 # Read the user input date range
+print()
+print()
 date_range = input("Enter the week to pull events for: ")
 
 # File path
