@@ -324,7 +324,9 @@ event = Grouped()
 
 # Read the user input date range
 print()
+print("Ensure '2025 Event Email Marketing Calendar' is the most up-to-date version.")
 print()
+
 date_range = input("Enter the week to pull events for: ")
 
 # File path
